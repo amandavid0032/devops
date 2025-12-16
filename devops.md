@@ -41,9 +41,7 @@ In the context of DevOps, the Waterfall model is best understood as a **traditio
 3. One an application is in the testing stage it is very difficult to go back and change something that was not well thought out in the concept stage 
 4. Not a good model for complex and object-oriented projects 
 5. Not suitable for the projects where requirements are at a moderate to high risk of changing 
----
 
----
 ```php
 Waterfall Model Diagram
 
@@ -93,7 +91,6 @@ Developers, testers, and operations work together closely.
 | Delivery             | Frequent   | End-only   |
 | Risk                 | Low        | High       |
 
----
 
 ```php
         ┌───────────────┐
@@ -121,8 +118,5 @@ Developers, testers, and operations work together closely.
         └───────┬───────┘
                 ↑
           (Next Sprint)
-
-
 ```
-
 ---

@@ -1,0 +1,141 @@
+# ========================================
+# SECRET: MongoDB admin username/password
+# ========================================
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongodb-secret
+type: Opaque
+data:
+  mongo-root-username: dXNlcm5hbWU=   # "username"
+  mongo-root-password: cGFzc3dvcmQ=   # "password"
+---
+# ========================================
+# PERSISTENT VOLUME (PV)
+# Minikube uses local storage path
+# ========================================
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-pv
+spec:
+  capacity:
+    storage: 1Gi                # Storage capacity
+  accessModes:
+    - ReadWriteOnce
+  hostPath:                     # Minikube host directory
+    path: "/mnt/data/mongo"
+---
+# ========================================
+# PVC: Persistent Volume Claim
+# Pod uses this to store database data
+# ========================================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+# ========================================
+# STATEFULSET: Best for Databases
+# Pod name stable + persistent storage
+# ========================================
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo-statefulset
+spec:
+  serviceName: "mongo-headless"  # Headless service required for StatefulSet
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+        - name: mongodb
+          image: mongo:latest
+          ports:
+            - containerPort: 27017
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: mongo-root-username
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: mongo-root-password
+          volumeMounts:
+            - mountPath: "/data/db"     # Default MongoDB data directory
+              name: mongo-storage
+  volumeClaimTemplates:           # StatefulSet automatically creates PVC
+    - metadata:
+        name: mongo-storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+---
+# ========================================
+# HEADLESS SERVICE (required for StatefulSet)
+# ========================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-headless
+spec:
+  clusterIP: None                 # Headless service
+  selector:
+    app: mongodb
+  ports:
+    - port: 27017
+---
+# ========================================
+# NORMAL SERVICE (internal cluster access)
+# ========================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-service
+spec:
+  type: ClusterIP
+  selector:
+    app: mongodb
+  ports:
+    - port: 27017
+      targetPort: 27017
+---
+# ========================================
+# INGRESS (optional)
+# Only needed if you expose MongoDB outside
+# NOT recommended for database, but included for learning
+# ========================================
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mongo-ingress
+spec:
+  rules:
+    - host: mongo.local      # You can set in /etc/hosts
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mongodb-service
+                port:
+                  number: 27017

@@ -6,6 +6,7 @@
 ## 📘 What is DevOps?
 
 DevOps is an approach that improves collaboration between developers and operations teams to automate and streamline software development, testing, deployment, and maintenance.
+
 ---
 
 ## 📘 What is Waterfall Model ?

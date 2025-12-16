@@ -43,6 +43,24 @@ In the context of DevOps, the Waterfall model is best understood as a **traditio
 5. Not suitable for the projects where requirements are at a moderate to high risk of changing 
 ---
 
+---
+```php
+Waterfall Model Diagram
+
+Requirement Analysis
+        ↓
+   System Design
+        ↓
+ Implementation
+        ↓
+     Testing
+        ↓
+    Deployment
+        ↓
+   Maintenance
+```
+---
+
 ## 📘 What Is Agile Methodology?
 Agile methodology is an iterative and incremental software development approach that focuses on flexibility, customer collaboration, continuous feedback, and rapid delivery of working software.
 
@@ -74,3 +92,37 @@ Developers, testers, and operations work together closely.
 | Customer involvement | Continuous | Limited    |
 | Delivery             | Frequent   | End-only   |
 | Risk                 | Low        | High       |
+
+---
+
+```php
+        ┌───────────────┐
+        │  Requirements │
+        └───────┬───────┘
+                ↓
+        ┌───────────────┐
+        │ Sprint Planning│
+        └───────┬───────┘
+                ↓
+   ┌────────────────────────┐
+   │ Design → Develop → Test │
+   └───────────┬────────────┘
+               ↓
+        ┌───────────────┐
+        │ Review & Demo │
+        └───────┬───────┘
+                ↓
+        ┌───────────────┐
+        │ Release       │
+        └───────┬───────┘
+                ↓
+        ┌───────────────┐
+        │ Retrospective │
+        └───────┬───────┘
+                ↑
+          (Next Sprint)
+
+
+```
+
+---
